@@ -1,0 +1,40 @@
+{
+    "name": "Block",
+    "type": "object",
+    "properties": {
+        "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Fecha del bloqueo"
+        },
+        "start_time": {
+            "type": "string",
+            "description": "Hora de inicio del bloqueo (HH:mm)"
+        },
+        "end_time": {
+            "type": "string",
+            "description": "Hora de fin del bloqueo (HH:mm)"
+        },
+        "is_full_day": {
+            "type": "boolean",
+            "default": false,
+            "description": "Si es bloqueo de d\u00eda completo"
+        },
+        "reason": {
+            "type": "string",
+            "description": "Motivo del bloqueo"
+        },
+        "recurring": {
+            "type": "boolean",
+            "default": false,
+            "description": "Si se repite semanalmente"
+        },
+        "recurring_day": {
+            "type": "number",
+            "description": "D\u00eda de la semana (0=Dom, 1=Lun, etc)"
+        }
+    },
+    "required": [
+        "date"
+    ]
+}

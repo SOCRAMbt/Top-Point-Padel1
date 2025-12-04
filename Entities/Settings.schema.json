@@ -1,0 +1,28 @@
+{
+    "name": "Settings",
+    "type": "object",
+    "properties": {
+        "key": {
+            "type": "string",
+            "description": "Clave de configuraci\u00f3n"
+        },
+        "value": {
+            "type": "string",
+            "description": "Valor de configuraci\u00f3n"
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "string",
+                "number",
+                "boolean",
+                "json"
+            ],
+            "default": "string"
+        }
+    },
+    "required": [
+        "key",
+        "value"
+    ]
+}

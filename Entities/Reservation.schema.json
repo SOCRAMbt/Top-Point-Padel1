@@ -1,0 +1,104 @@
+{
+  "name": "Reservation",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "ID del usuario que reserva"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email del usuario"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "Nombre del usuario"
+    },
+    "user_phone": {
+      "type": "string",
+      "description": "Tel\u00e9fono del usuario"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha de la reserva"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "Hora de inicio (HH:mm)"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "Hora de fin (HH:mm)"
+    },
+    "duration": {
+      "type": "number",
+      "enum": [
+        60,
+        90
+      ],
+      "description": "Duraci\u00f3n en minutos"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_payment",
+        "pending_manual_payment",
+        "paid",
+        "cancelled",
+        "completed"
+      ],
+      "default": "pending_payment"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "mercadopago",
+        "transfer",
+        "cash"
+      ],
+      "description": "M\u00e9todo de pago"
+    },
+    "payment_id": {
+      "type": "string",
+      "description": "ID de pago de Mercado Pago"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Monto pagado"
+    },
+    "calendar_synced": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si se sincroniz\u00f3 con Google Calendar"
+    },
+    "reminder_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si se envi\u00f3 recordatorio"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notas adicionales"
+    },
+    "cancelled_by": {
+      "type": "string",
+      "enum": [
+        "user",
+        "admin"
+      ],
+      "description": "Qui\u00e9n cancel\u00f3 la reserva"
+    },
+    "cancellation_reason": {
+      "type": "string",
+      "description": "Motivo de cancelaci\u00f3n"
+    }
+  },
+  "required": [
+    "user_email",
+    "date",
+    "start_time",
+    "end_time",
+    "duration"
+  ]
+}

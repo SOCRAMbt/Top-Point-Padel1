@@ -1,0 +1,44 @@
+{
+    "name": "AuditLog",
+    "type": "object",
+    "properties": {
+        "action": {
+            "type": "string",
+            "enum": [
+                "reservation_created",
+                "reservation_cancelled",
+                "reservation_paid",
+                "block_created",
+                "block_deleted",
+                "settings_updated",
+                "manual_payment_confirmed",
+                "waitlist_notified"
+            ],
+            "description": "Tipo de acci\u00f3n"
+        },
+        "entity_type": {
+            "type": "string",
+            "description": "Tipo de entidad afectada"
+        },
+        "entity_id": {
+            "type": "string",
+            "description": "ID de la entidad afectada"
+        },
+        "user_email": {
+            "type": "string",
+            "description": "Email del usuario que realiz\u00f3 la acci\u00f3n"
+        },
+        "details": {
+            "type": "string",
+            "description": "Detalles adicionales en JSON"
+        },
+        "ip_address": {
+            "type": "string",
+            "description": "Direcci\u00f3n IP"
+        }
+    },
+    "required": [
+        "action",
+        "user_email"
+    ]
+}

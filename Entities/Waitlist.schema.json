@@ -1,0 +1,69 @@
+{
+    "name": "Waitlist",
+    "type": "object",
+    "properties": {
+        "user_id": {
+            "type": "string",
+            "description": "ID del usuario"
+        },
+        "user_email": {
+            "type": "string",
+            "description": "Email del usuario"
+        },
+        "user_name": {
+            "type": "string",
+            "description": "Nombre del usuario"
+        },
+        "user_phone": {
+            "type": "string",
+            "description": "Tel\u00e9fono del usuario"
+        },
+        "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Fecha deseada"
+        },
+        "start_time": {
+            "type": "string",
+            "description": "Hora de inicio deseada"
+        },
+        "duration": {
+            "type": "number",
+            "enum": [
+                60,
+                90
+            ],
+            "description": "Duraci\u00f3n deseada"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "waiting",
+                "notified",
+                "expired",
+                "converted"
+            ],
+            "default": "waiting"
+        },
+        "notified_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Cu\u00e1ndo se notific\u00f3"
+        },
+        "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Cu\u00e1ndo expira la oferta"
+        },
+        "position": {
+            "type": "number",
+            "description": "Posici\u00f3n en la lista"
+        }
+    },
+    "required": [
+        "user_email",
+        "date",
+        "start_time",
+        "duration"
+    ]
+}
