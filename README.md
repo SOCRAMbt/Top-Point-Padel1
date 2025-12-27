@@ -1,102 +1,128 @@
-# TPP - Sistema de Reservas de Pádel
+# 🎾 Top Point Padel - Sistema de Reservas
 
-Sistema completo full-stack para gestión de reservas de canchas de pádel.
+> Sistema integral para la gestión de reservas de canchas de pádel, con pagos online y sincronización automática de calendario.
 
-## Estructura del Proyecto
+![Project Status](https://img.shields.io/badge/Status-Production%20Ready-success)
+![Stack](https://img.shields.io/badge/Stack-MERN-blue)
 
-El proyecto está dividido en dos carpetas principales:
+## 📖 Descripción
 
-*   **`client/`**: Frontend en React + Vite.
-*   **`server/`**: Backend en Node.js + Express + MongoDB.
+**TPP Booking System** es una aplicación web moderna diseñada para simplificar el proceso de alquilar canchas. Permite a los usuarios registrarse, seleccionar horarios disponibles en tiempo real, pagar mediante Mercado Pago (o efectivo) y recibir automáticamente la reserva en su Google Calendar.
 
-## Requisitos Previos
+El sistema está diseñado con una arquitectura robusta que soporta tanto entornos de desarrollo local (con mocks inteligentes) como despliegues en la nube de alta disponibilidad.
 
-*   Node.js (v18+)
-*   MongoDB (local o Atlas)
-*   Cuenta de Google Cloud (para OAuth)
-*   Cuenta de Mercado Pago (para credenciales de prueba)
+## ✨ Funcionalidades Principales (Hecho)
 
-## Instalación y Configuración
+*   **Autenticación Híbrida:** Login con **Google OAuth** y **OTP (Código SMS)** vía número de teléfono.
+*   **Gestión de Reservas:** Visualización de horarios disponibles en tiempo real. Prevención de conflictos de reservas.
+*   **Integración de Pagos:** Conexión completa con **Mercado Pago** (Checkout Pro).
+*   **Google Calendar Sync:** Las reservas confirmadas se agendan automáticamente en el calendario del usuario.
+*   **Responsive Design:** Interfaz optimizada para móviles y escritorio usando **Tailwind CSS**.
+*   **Base de Datos Inteligente:**
+    *   **Local:** SQLite (Cero configuración).
+    *   **Producción:** PostgreSQL (Activación automática).
+*   **Modo Desarrollo Smart:**
+    *   Mock de SMS (Código fijo `123456`).
+    *   Auto-confirmación de pagos simulados para probar flujo completo sin webhooks locales.
 
-### 1. Variables de Entorno
+## 🛠️ Stack Tecnológico
 
-Crear un archivo `.env` en la carpeta `server/` con el siguiente contenido:
+### Frontend (Client)
+*   **Framework:** React + Vite
+*   **Estilos:** Tailwind CSS
+*   **HTTP Client:** Axios
+*   **State Mgmt:** React Query
 
-```env
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/tpp_padel
-CLIENT_URL=http://localhost:5173
-JWT_SECRET=tu_secreto_jwt
-COOKIE_KEY=tu_secreto_cookie
+### Backend (Server)
+*   **Runtime:** Node.js
+*   **Framework:** Express.js
+*   **ORM:** Sequelize (Soporte Multi-DB)
+*   **Integraciones:** `googleapis`, `mercadopago`, `twilio` (simulado).
 
-# Google OAuth
-GOOGLE_CLIENT_ID=tu_google_client_id
-GOOGLE_CLIENT_SECRET=tu_google_secret
+---
 
-# Mercado Pago
-MP_ACCESS_TOKEN=tu_access_token_mp
+## 📂 Arquitectura y Estructura de Archivos
+
+El proyecto utiliza una estructura **Monorepo** separada en `client` y `server`.
+
+### 📁 Raíz
+*   `DEPLOY_GUIDE.md`: Guía paso a paso para subir a producción (Vercel/Railway).
+*   `INSTRUCCIONES_GOOGLE_CALENDAR.md`: Guía para configurar Google Cloud Console.
+
+### 📁 client (Frontend)
+```text
+client/
+├── src/
+│   ├── components/    # Componentes UI reutilizables (Botones, Modales, Inputs)
+│   ├── pages/         # Vistas principales (Home, BookingWizard, Profile)
+│   ├── services/      # Lógica de conexión con API (api.js endpoints)
+│   └── App.jsx        # Configuración de Routing
+├── index.html         # Punto de entrada
+└── vite.config.js     # Configuración del bundler y Proxy
 ```
 
-### 2. Instalación de Dependencias
-
-Ejecutar desde la raíz del proyecto para instalar todo:
-
-```bash
-# Servidor
-cd server
-npm install
-
-# Cliente
-cd ../client
-npm install
+### 📁 server (Backend)
+```text
+server/
+├── src/
+│   ├── config/        # Configuración de DB, Passport, Variables
+│   ├── controllers/   # Lógica de negocio (AuthController, ReservationController)
+│   ├── models/        # Definiciones de Tablas (User, Reservation, Payment)
+│   ├── routes/        # Definición de endpoints API (/api/auth, /api/booking)
+│   └── services/      # Lógica externa (GoogleCalendarService, PaymentService)
+├── server.js          # Punto de entrada del servidor
+└── tpp_v3.sqlite      # Base de datos local (ignorada en git)
 ```
 
-### 3. Ejecución en Desarrollo
+---
 
-Desde la raíz del proyecto (donde está el `package.json` principal):
+## 🚀 Cómo Correr en Local (Localhost)
 
-```bash
-npm run dev
-```
+1.  **Instalar dependencias:**
+    ```bash
+    cd client && npm install
+    cd ../server && npm install
+    ```
 
-Esto iniciará concurrentemente:
-*   Backend en `http://localhost:5000`
-*   Frontend en `http://localhost:5173`
+2.  **Configurar Variables de Entorno:**
+    *   Crea un archivo `.env` en `server/` basándote en los ejemplos.
 
-## Características Implementadas
+3.  **Iniciar Servidores:**
+    *   Abre dos terminales:
+    *   Terminal 1 (Backend): `cd server && npm start`
+    *   Terminal 2 (Frontend): `cd client && npm run dev`
 
-### Backend
-*   **API RESTful** con Express.
-*   **Base de Datos**: MongoDB con Mongoose.
-*   **Autenticación**: 
-    *   Google OAuth 2.0 (Passport.js).
-    *   Login con Teléfono + OTP (Simulado para dev).
-*   **Reservas**:
-    *   Validación de superposición de horarios.
-    *   Creación de reservas en estado "pendiente".
-    *   **Cron Job**: Cancelación automática de reservas pendientes tras 15 minutos.
+4.  **Acceder:**
+    *   PC: `http://localhost:5173`
+    *   Móvil (misma red): `http://TU_IP_LOCAL:5173` (Login con OTP `123456`).
 
-### Frontend
-*   Arquitectura SPA con React + Vite.
-*   **Diseño Responsivo**: Prioridad UX Mobile.
-*   **Login Page**: Interfaz moderna para ingreso con Google o Teléfono.
-*   **Configuración Proxy**: Redirección automática de `/api` y `/auth` al backend.
+---
 
-## Deployment
+## ☁️ Cómo Desplegar "En Serio" (Producción)
 
-### Backend (Render/Railway/Heroku)
-1.  Subir la carpeta `server` o el root (configurando el start script).
-2.  Configurar las variables de entorno en el panel del proveedor.
-3.  Asegurarse de que `CLIENT_URL` apunte al dominio del frontend en producción.
+Para llevar la app a internet real (con HTTPS, Webhooks de Mercado Pago funcionales y Auth de Google sin restricciones), sigue la guía detallada:
 
-### Frontend (Vercel/Netlify)
-1.  Subir la carpeta `client`.
-2.  Configurar el comando de build: `npm run build`.
-3.  Carpeta de salida: `dist`.
-4.  **Importante**: En producción, configurar los rewrites o proxy para que las llamadas a `/api` vayan al dominio del backend.
+👉 **[VER GUÍA DE DESPLIEGUE (DEPLOY_GUIDE.md)](./DEPLOY_GUIDE.md)**
 
-## Próximos Pasos (Recomendados)
+Resumen:
+1.  **Backend:** Desplegar en **Railway** (automáticamente usará PostgreSQL).
+2.  **Frontend:** Desplegar en **Vercel**.
+3.  **Config:** Actualizar URLs en Google Cloud y Mercado Pago.
 
-1.  Completar la integración del SDK de Mercado Pago en `bookingController.js`.
-2.  Conectar las notificaciones reales (Email/SMS) en los eventos de reserva.
-3.  Implementar la lógica final de sincronización con Google Calendar.
+---
+
+## ✅ Estado del Proyecto
+
+| Módulo | Estado | Notas |
+| :--- | :---: | :--- |
+| **Frontend UI** | ✅ Completado | Diseño moderno y responsive. |
+| **Auth (Google)** | ✅ Completado | Requiere HTTPS para móvil. |
+| **Auth (OTP)** | ✅ Completado | Simulado en Dev, listo para Twilio en Prod. |
+| **Reservas** | ✅ Completado | Validación de solapamiento y horarios. |
+| **Pagos (MP)** | ✅ Completado | Webhook listo. Mock auto-confirm en local. |
+| **Calendar Sync**| ✅ Completado | Token refresh y reconexión robusta. |
+| **Admin Panel** | 🚧 Pendiente | Funcionalidad básica, requiere analytics avanzados. |
+
+---
+
+**Desarrollado con ❤️ para Top Point Padel.**
