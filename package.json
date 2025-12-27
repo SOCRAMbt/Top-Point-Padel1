@@ -1,0 +1,17 @@
+{
+    "name": "tpp-padel-system",
+    "version": "1.0.0",
+    "description": "Full stack Padel Booking System",
+    "scripts": {
+        "start": "node server/server.js",
+        "server": "cd server && node server.js",
+        "client": "cd client && npm run dev",
+        "dev": "concurrently \"npm run server\" \"npm run client\""
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}
