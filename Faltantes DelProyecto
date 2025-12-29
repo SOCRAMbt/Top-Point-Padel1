@@ -1,0 +1,108 @@
+Plan de Implementación - Refactorización del Sistema de Reservas de Pádel Revisión del Usuario Requerida IMPORTANTE
+
+Selección de Base de Datos: La especificación requiere PostgreSQL. El sistema actual utiliza SQLite. Procederé con Sequelize ORM, que soporta ambos. Para el desarrollo local, si no tienes Postgres instalado/ejecutándose, podemos continuar con SQLite (que es estrictamente local) o puedo intentar configurar Postgres si proporcionas las credenciales. Suposición: Seguiremos estrictamente la solicitud de compatibilidad de arquitectura con Postgres, pero podríamos ejecutar SQLite localmente si PG no está disponible para evitar bloqueos.
+
+ADVERTENCIA
+
+Google OAuth y Mercado Pago: Estos requieren Claves API válidas (CLIENT_ID, CLIENT_SECRET, MP_ACCESS_TOKEN). Estableceré la estructura del código, pero la funcionalidad dependerá de variables .env válidas.
+
+Cambios Propuestos
+Arquitectura Backend
+Framework: Node.js + Express (Existente)
+
+ORM: Sequelize (Compatible con Postgres/SQLite)
+
+Auth: JWT + Passport (Google) + OTP Personalizado
+
+Pagos: Mercado Pago Node SDK
+
+Programador (Scheduler): node-cron
+
+Modelos de Datos (Sequelize)
+[MODIFICAR] server/src/models/Reservation.js
+
+Agregar payment_id, payment_status, mercado_pago_preference_id
+
+Agregar google_calendar_event_id
+
+Agregar duration (entero, minutos)
+
+[NUEVO] server/src/models/Payment.js
+
+Rastrear transacciones de pago individuales, IDs externos y estado de reembolso.
+
+[NUEVO] server/src/models/Waitlist.js
+
+Campos: date, start_time, user_id, status (waiting, notified, converted, expired), expires_at.
+
+[NUEVO] server/src/models/AuditLog.js
+
+Rastrear acciones críticas: reservation_cancelled, price_changed, block_created.
+
+Componentes
+Autenticación
+Google OAuth: Implementar passport-google-oauth20.
+
+OTP: Refactorizar authController para soportar puntos de integración reales de SMS (usando un wrapper simulado por ahora).
+
+Sistema de Reservas
+Algoritmo Anti-Superposición:
+
+JavaScript
+
+const hasOverlap = existingReservations.some(r => 
+  (newStart < r.end) && (newEnd > r.start)
+);
+Franjas Horarias: El Frontend generará bloques de 30 minutos. El Backend valida la lógica.
+
+Mercado Pago
+Creación de Preferencia: Endpoint para generar preferencia de MP con back_urls y webhook.
+
+Webhook: Endpoint /api/webhooks/mercadopago para verificar la firma de pago y actualizar la reserva a pagada.
+
+Google Calendar
+Sincronización: Usar librería googleapis.
+
+Alcance (Scope): calendar.events.
+
+Notificaciones
+Email: nodemailer con plantillas HTML.
+
+Cron: Trabajo ejecutándose cada minuto/5-minutos para verificar:
+
+Reservas próximas (enviar recordatorio 30m antes).
+
+Expiraciones de lista de espera.
+
+Frontend (React + Tailwind)
+Reserva Móvil:
+
+Estilo "Historia de Instagram" o asistente paso a paso para la selección de fecha/hora.
+
+Vista de línea de tiempo para disponibilidad (Verde=Libre, Rojo=Ocupado).
+
+Panel de Administración:
+
+Mapa de calor (Heatmap): Visualización de horas pico.
+
+Exportar: Generar CSV en el lado del cliente o stream del backend.
+
+Plan de Verificación
+Pruebas Automatizadas
+Pruebas Unitarias: Validar lógica anti-superposición.
+
+Integración: Probar flujo completo Reserva -> Pago Simulado -> Confirmación.
+
+Verificación Manual
+Reserva: Crear una reserva con Google Auth.
+
+Pago: Simular éxito de pago MP.
+
+Admin: Verificar que la reserva aparezca en el Dashboard y las actualizaciones del Mapa de calor.
+
+Fase 9: Pulido Final y Arreglos (Actual)
+[ARREGLO] Webhook de Pago: Conectar paymentController a googleCalendarService para asegurar que los pagos reales disparen eventos de calendario.
+
+[NUEVO] Lógica de Reembolso: Implementar refundPayment en paymentService y dispararlo en la cancelación de reserva.
+
+[ARREGLO] Estadísticas de Admin: Conectar getStats a modelos reales de Waitlist y AuditLog en lugar de datos simulados.
