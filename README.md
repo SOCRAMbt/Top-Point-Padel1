@@ -98,7 +98,7 @@ server/
 
 ---
 
-## ☁️ Cómo Desplegar "En Serio" (Producción)
+## ☁️ Cómo Desplegar  (Producción)
 
 Para llevar la app a internet real (con HTTPS, Webhooks de Mercado Pago funcionales y Auth de Google sin restricciones), sigue la guía detallada:
 
